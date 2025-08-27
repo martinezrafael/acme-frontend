@@ -1,0 +1,45 @@
+<div class="stack">
+  <textarea
+    [(ngModel)]="conteudoMensagem"
+    placeholder="Digite o conteúdo da notificação"
+  ></textarea>
+
+  <button (click)="enviar()">Enviar</button>
+
+  <table class="notificacao-tabela">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Conteúdo</th>
+        <th>Status Code</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of itens(); track item.mensagemId) {
+      <tr>
+        <td>{{ item.mensagemId }}</td>
+        <td>{{ item.conteudoMensagem }}</td>
+        <td
+          [ngClass]="{
+            'status-falha': item.status === 'FALHA_PROCESSAMENTO',
+            'status-sucesso': item.status === 'PROCESSADO_SUCESSO',
+            'status-aguardando': item.status === 'AGUARDANDO PROCESSAMENTO'
+          }"
+        >
+          {{ item.statusCode }}
+        </td>
+        <td
+          [ngClass]="{
+            'status-falha': item.status === 'FALHA_PROCESSAMENTO',
+            'status-sucesso': item.status === 'PROCESSADO_SUCESSO',
+            'status-aguardando': item.status === 'AGUARDANDO PROCESSAMENTO'
+          }"
+        >
+          [{{ item.status }}]
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

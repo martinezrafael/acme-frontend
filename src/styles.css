@@ -1,1 +1,74 @@
 /* You can add global styles to this file, and also import other style files */
+
+.notificacao-tabela {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 24px;
+  animation: fadeInTable 0.7s ease;
+}
+
+.notificacao-tabela th {
+  background: #1976d2;
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 8px;
+  text-align: left;
+}
+
+.notificacao-tabela td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background 0.3s;
+}
+
+.notificacao-tabela tr:last-child td {
+  border-bottom: none;
+}
+
+.notificacao-tabela tbody tr {
+  transition: background 0.3s;
+}
+
+.notificacao-tabela tbody tr:hover {
+  background: #e3f2fd;
+}
+
+@keyframes fadeInTable {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.status-falha {
+  color: #fff;
+  background: #e53935 !important;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.status-sucesso {
+  color: #fff;
+  background: #43a047 !important;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.status-aguardando {
+  color: #fff;
+  background: #fbc02d !important;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
