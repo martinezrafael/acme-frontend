@@ -1,10 +1,12 @@
 <div class="stack">
+  <label for="conteudo" class="sr-only">Conteúdo da notificação</label>
   <textarea
+    id="conteudo"
     [(ngModel)]="conteudoMensagem"
     placeholder="Digite o conteúdo da notificação"
   ></textarea>
 
-  <button (click)="enviar()">Enviar</button>
+  <button [disabled]="!conteudoMensagem.trim()" (click)="enviar()">Enviar</button>
 
   <table class="notificacao-tabela">
     <thead>

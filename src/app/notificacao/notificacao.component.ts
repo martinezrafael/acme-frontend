@@ -2,7 +2,7 @@ import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NotificacaoService } from './notificacao.service';
-import { io, Socket } from 'socket.io-client';
+import { SocketService } from '../core/socket.service';
 
 type ItemStatus = 'AGUARDANDO PROCESSAMENTO' | 'PROCESSADO_SUCESSO' | 'FALHA_PROCESSAMENTO';
 
@@ -22,36 +22,27 @@ interface ItemLista {
 export class NotificacaoComponent implements OnInit, OnDestroy {
   conteudoMensagem = '';
   itens = signal<ItemLista[]>([]);
-  private socket: Socket | undefined;
+  private sub?: { unsubscribe: () => void };
 
-  constructor(private svc: NotificacaoService) {}
+  constructor(private svc: NotificacaoService, private socket: SocketService) {}
 
   async enviar() {
-    if (!this.conteudoMensagem?.trim()) {
-      alert('Conteúdo da mensagem é obrigatório.');
-      return;
-    }
+    const texto = this.conteudoMensagem?.trim();
+    if (!texto) return;
 
-    const { mensagemId } = await this.svc.enviarNotificacao(this.conteudoMensagem);
+    const { mensagemId } = await this.svc.enviarNotificacao(texto);
 
     this.itens.update((arr) => [
-      {
-        mensagemId,
-        conteudoMensagem: this.conteudoMensagem,
-        status: 'AGUARDANDO PROCESSAMENTO',
-        statusCode: 0,
-      },
+      { mensagemId, conteudoMensagem: texto, status: 'AGUARDANDO PROCESSAMENTO', statusCode: 0 },
       ...arr,
     ]);
-
     this.conteudoMensagem = '';
   }
 
   ngOnInit(): void {
-    this.socket = io('http://localhost:3000');
-    this.socket.on(
-      'statusAtualizado',
-      (data: { mensagemId: string; status: ItemStatus; statusCode?: number }) => {
+    this.sub = this.socket
+      .on<{ mensagemId: string; status: ItemStatus; statusCode?: number }>('statusAtualizado')
+      .subscribe((data) => {
         this.itens.update((arr) =>
           arr.map((item) =>
             item.mensagemId === data.mensagemId
@@ -59,13 +50,10 @@ export class NotificacaoComponent implements OnInit, OnDestroy {
               : item
           )
         );
-      }
-    );
+      });
   }
 
   ngOnDestroy(): void {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
+    this.sub?.unsubscribe();
   }
 }
