@@ -34,7 +34,6 @@ export class NotificacaoComponent implements OnInit, OnDestroy {
 
     const { mensagemId } = await this.svc.enviarNotificacao(this.conteudoMensagem);
 
-    // Adiciona item com status inicial
     this.itens.update((arr) => [
       {
         mensagemId,
@@ -49,12 +48,10 @@ export class NotificacaoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Conecta ao WebSocket do backend
     this.socket = io('http://localhost:3000');
     this.socket.on(
       'statusAtualizado',
       (data: { mensagemId: string; status: ItemStatus; statusCode?: number }) => {
-        // Atualiza o status e statusCode do item correspondente
         this.itens.update((arr) =>
           arr.map((item) =>
             item.mensagemId === data.mensagemId
